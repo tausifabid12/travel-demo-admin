@@ -85,12 +85,16 @@ const FALLBACK_SETTINGS: SiteSettings = {
 };
 
 export async function getSettings(): Promise<SiteSettings> {
-  await dbConnect();
-  const doc = await Setting.findOne({})
-    .select("-phonePeSaltKey -pinggoApiKey")
-    .lean<Record<string, unknown>>();
-  if (!doc) return FALLBACK_SETTINGS;
-  return serialize({ ...FALLBACK_SETTINGS, ...doc }) as SiteSettings;
+  try {
+    await dbConnect();
+    const doc = await Setting.findOne({})
+      .select("-phonePeSaltKey -pinggoApiKey")
+      .lean<Record<string, unknown>>();
+    if (!doc) return FALLBACK_SETTINGS;
+    return serialize({ ...FALLBACK_SETTINGS, ...doc }) as SiteSettings;
+  } catch {
+    return FALLBACK_SETTINGS;
+  }
 }
 
 /* ------------------------------ Packages ------------------------------ */
