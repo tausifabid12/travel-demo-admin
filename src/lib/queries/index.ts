@@ -201,9 +201,13 @@ export async function getRelatedPackages(pkg: PublicPackage, limit = 3) {
 }
 
 export async function getPackageSlugs() {
-  await dbConnect();
-  const docs = await Package.find(PUBLISHED).select("slug updatedAt").lean();
-  return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  try {
+    await dbConnect();
+    const docs = await Package.find(PUBLISHED).select("slug updatedAt").lean();
+    return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  } catch {
+    return [];
+  }
 }
 
 /* ---------------------------- Destinations ---------------------------- */
@@ -235,13 +239,17 @@ export async function getDestinationBySlug(slug: string) {
 }
 
 export async function getDestinationSlugs() {
-  await dbConnect();
-  const docs = await Destination.find({}).select("slug name updatedAt").lean();
-  return serialize(docs) as unknown as {
-    slug?: string;
-    name: string;
-    updatedAt: string;
-  }[];
+  try {
+    await dbConnect();
+    const docs = await Destination.find({}).select("slug name updatedAt").lean();
+    return serialize(docs) as unknown as {
+      slug?: string;
+      name: string;
+      updatedAt: string;
+    }[];
+  } catch {
+    return [];
+  }
 }
 
 /* ---------------------------- Case studies ---------------------------- */
@@ -307,9 +315,13 @@ export async function getFeaturedCaseStudies(ids?: string[], limit = 2) {
 }
 
 export async function getCaseStudySlugs() {
-  await dbConnect();
-  const docs = await CaseStudy.find(PUBLISHED).select("slug updatedAt").lean();
-  return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  try {
+    await dbConnect();
+    const docs = await CaseStudy.find(PUBLISHED).select("slug updatedAt").lean();
+    return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  } catch {
+    return [];
+  }
 }
 
 /* ------------------------------ Insights ------------------------------ */
@@ -359,11 +371,15 @@ export async function getRelatedInsights(insight: PublicInsight, limit = 3) {
 }
 
 export async function getInsightSlugs() {
-  await dbConnect();
-  const docs = await Insight.find(liveInsightFilter())
-    .select("slug updatedAt")
-    .lean();
-  return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  try {
+    await dbConnect();
+    const docs = await Insight.find(liveInsightFilter())
+      .select("slug updatedAt")
+      .lean();
+    return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  } catch {
+    return [];
+  }
 }
 
 /* ------------------------------ Offerings ----------------------------- */
@@ -400,9 +416,13 @@ export async function getOfferingBySlug(slug: string) {
 }
 
 export async function getOfferingSlugs() {
-  await dbConnect();
-  const docs = await Offering.find(PUBLISHED).select("slug updatedAt").lean();
-  return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  try {
+    await dbConnect();
+    const docs = await Offering.find(PUBLISHED).select("slug updatedAt").lean();
+    return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  } catch {
+    return [];
+  }
 }
 
 /* ------------------------------- Careers ------------------------------ */
@@ -442,9 +462,13 @@ export async function getRoleBySlug(slug: string) {
 }
 
 export async function getRoleSlugs() {
-  await dbConnect();
-  const docs = await Career.find({ status: "active" })
-    .select("slug updatedAt")
-    .lean();
-  return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  try {
+    await dbConnect();
+    const docs = await Career.find({ status: "active" })
+      .select("slug updatedAt")
+      .lean();
+    return serialize(docs) as unknown as { slug: string; updatedAt: string }[];
+  } catch {
+    return [];
+  }
 }
