@@ -21,14 +21,20 @@ const display = Fraunces({
   axes: ["SOFT", "WONK", "opsz"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Bhancer — Corporate Travel, MICE & Incentive Experiences",
-    template: "%s | Bhancer",
-  },
-  description:
-    "Bhancer designs corporate travel, MICE, incentive programmes and offsites for teams that expect more.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  return {
+    title: {
+      default: "Bhancer — Corporate Travel, MICE & Incentive Experiences",
+      template: "%s | Bhancer",
+    },
+    description:
+      "Bhancer designs corporate travel, MICE, incentive programmes and offsites for teams that expect more.",
+    ...(settings.searchConsoleCode && {
+      verification: { google: settings.searchConsoleCode },
+    }),
+  };
+}
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const settings = await getSettings();
@@ -38,11 +44,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${display.variable}`}
     >
-      <head>
-        {settings.searchConsoleCode && (
-          <meta name="google-site-verification" content={settings.searchConsoleCode} />
-        )}
-      </head>
       <body className="flex min-h-screen flex-col bg-white font-sans text-ink antialiased">
         <PushNotificationManager configStr={settings.firebaseConfig as string | undefined} />
         {/* Google Tag Manager */}
@@ -56,7 +57,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             />
           </noscript>
         )}
-        
+
         {settings.gtmTag && (
           <Script id="google-tag-manager" strategy="afterInteractive">
             {`
